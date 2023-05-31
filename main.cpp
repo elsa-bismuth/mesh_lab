@@ -377,13 +377,8 @@ void TriangleMesh::scale_and_translate(double scaling, const Vector& translation
 class Edge{
 public:
     Edge(int a=0, int b=0) {
-        if (a<b) {
-            this->a = a;
-            this->b = b;
-        } else {
-            this->a = b;
-            this->b = a;
-        }
+        this->a = a;
+        this->b = b;
     }
 
     int a, b;
@@ -403,6 +398,7 @@ int main() {
 
     TriangleMesh mesh;
     mesh.readOBJ("goethe.obj");
+    mesh.center_scale();
     std::map<Edge, std::vector<int> > edge_to_tri;
     std::map<int, std::vector<int> > vtx_to_tri;
 
@@ -446,9 +442,7 @@ int main() {
                 ordered_boundary_edges[i] =  boundary_edges[j];
                 break;
             }
-            
         }
-        
     }
 
     for (int i = 0; i < ordered_boundary_edges.size(); i++)
@@ -461,7 +455,7 @@ int main() {
         mesh.vertices[ordered_boundary_edges[i].a] = circle_vtx;
     }
     
-    for (int iter = 0; iter < 10000; iter++) 
+    for (int iter = 0; iter < 5000; iter++) 
     {
         std::vector<Vector> updated_vertices(mesh.vertices.size());
 
@@ -486,7 +480,7 @@ int main() {
                 nb_neighbors += 2;
             }
             
-            updated_vertices[i] = avg_neighbors/nb_neighbors; // def updates
+            updated_vertices[i] = avg_neighbors/nb_neighbors;
         }
         mesh.vertices = updated_vertices;
     }
